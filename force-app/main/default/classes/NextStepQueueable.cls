@@ -20,11 +20,12 @@
 public with sharing class NextStepQueueable implements Queueable {
 
     // Member variable to store the accounts
-    private Map<Id,Account> accounts;
+    private Map<Id,Account> accountsMap;
 
     // Constructor to accept the accounts
     public NextStepQueueable(Map<Id,Account> accounts) {
         // Store the accounts in a member variable
+        this.accountsMap = accounts;
     }
 
     // Method to queue the job
