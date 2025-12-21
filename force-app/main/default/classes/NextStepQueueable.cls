@@ -31,22 +31,34 @@ public with sharing class NextStepQueueable implements Queueable {
     // Method to queue the job
     public static void enqueueJob() {
         // Get 10 accounts with Next Step populated
+        List<Account> accountsToProcess = [SELECT Id, Next_Step__c FROM Account WHERE Next_Step__c != null LIMIT 10];
 
         // If there are any accounts, queue the job using System.enqueueJob
+        if (accountsToProcess.size() > 0) {
+            Map<Id,Account> accountsMap = new Map<Id,Account>();
+            for (Account acc : accountsToProcess) {
+                accountsMap.put(acc.Id, acc);
+            }
+            System.enqueueJob(new NextStepQueueable(accountsMap));
+        }
+        
     }
 
     /*
-     * Update/Uncomment the template code to create a method
-     * Method to execute the queueable job
+     * 
+     * 
      */
-    //[public | private ] [static] data_type execute (input parameters) {
         public void execute(QueueableContext context) {
 
         // Get the accounts from the member variable
+        List<Account> accounts = accountsMap.values();
 
             // Remove the Next Step using the helper method
-
+            for (Account acc : accounts) {
+                removeNextStep(acc);
+            }
         // Update the accounts
+        update accounts;
 
         // Get the opportunities related to the accounts
 
@@ -55,6 +67,10 @@ public with sharing class NextStepQueueable implements Queueable {
         // Update the opportunities
 
         // Call the enqueueJob method to queue another job to process more records.
+
+        if (accounts.size() > 0) {
+            enqueueJob();
+        }
     }
 
     // Helper method to remove the Next Step
