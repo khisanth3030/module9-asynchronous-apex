@@ -50,7 +50,9 @@ public with sharing class NextStepFuture {
     * Create a method that inserts a big deal opportunity and updates the user role name to 'CRO'
     * Update the corresponding test class AsynchronousTest and test method nextStepFuture_testCreateDealAndUpdateRole to cover test this method
     */
+    
     //Mix DML Error happens when you try to perform DML operations on setup and non-setup objects in a single transaction.
+    @future
     public static void createDealAndUpdateRole() {
         Opportunity bigDeal = new Opportunity();
         insertBigDeal(bigDeal);
