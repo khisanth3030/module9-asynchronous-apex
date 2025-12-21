@@ -52,17 +52,20 @@ public with sharing class NextStepFuture {
     */
     
     //Mix DML Error happens when you try to perform DML operations on setup and non-setup objects in a single transaction.
-    @future
+    
     public static void createDealAndUpdateRole() {
         Opportunity bigDeal = new Opportunity();
-        insertBigDeal(bigDeal);
+        insertBigDeal(bigDeal.Id);
 
         UserRole[] roles = [SELECT Id, Name FROM UserRole WHERE Id = :UserInfo.getUserRoleId() OR Name = 'CRO' LIMIT 1];
         updateUserRoleName(roles);
     }
 
     // Helper method to insert big deal
-    private static void insertBigDeal(Opportunity opp) {
+    @future
+    private static void insertBigDeal(Id oppID) {
+        Opportunity opp = new Opportunity();
+        opp.Id = oppID;
         opp.Amount = 1000000;
         opp.Name = 'Big Deal';
         opp.StageName = 'Closed Won'; 
@@ -73,6 +76,7 @@ public with sharing class NextStepFuture {
 
 
     // Helper method to update role name
+
     private static void updateUserRoleName(UserRole[] roles){
         UserRole role;
         if (roles.isEmpty()) {
