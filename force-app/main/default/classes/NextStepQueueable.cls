@@ -61,16 +61,18 @@ public with sharing class NextStepQueueable implements Queueable {
         update accounts;
 
         // Get the opportunities related to the accounts
-
+        List<Opportunity> opportunitiesToUpdate = 
+        [SELECT Id, NextStep FROM 
+        Opportunity WHERE AccountId 
+        IN :accountsMap.keySet() AND NextStep != null];
+            
+        for(Opportunity opp : opportunitiesToUpdate) {
             // Remove the Next Step using the helper method
-
-        // Update the opportunities
-
-        // Call the enqueueJob method to queue another job to process more records.
-
-        if (accounts.size() > 0) {
-            enqueueJob();
+            removeNextStep(opp);
         }
+        // Update the opportunities
+        update opportunitiesToUpdate;
+
     }
 
     // Helper method to remove the Next Step
